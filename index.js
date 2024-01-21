@@ -1,22 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config()
 const mongoose = require('mongoose')
 const bodyparser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: axios } = require("axios");
 const User = require('./models/userschema')
+const UploadRoute = require('./routes/UploadRoute')
 
 const app = express();
 app.use(express.json());
 app.use(bodyparser.json())
 app.use(cors({ origin: true }));
+app.use(express.static('public'));
 
-const SECRET_KEY = 'secret_key'
+const PORT = process.env.PORT || 3001;
 
-
-const dburl = 'mongodb+srv://GlitchCity:GlitchCity@cluster0.mwglp4w.mongodb.net/GlitchCity?retryWrites=true&w=majority'
-mongoose.connect(dburl).then(()=>{
+mongoose.connect(process.env.MONGO_URI).then(()=>{
 
      
 app.post("/authenticate", async (req, res) => {
@@ -72,7 +73,7 @@ app.post("/authenticate", async (req, res) => {
         if (!pass) {
             return res.status(401).json({error:'invalid credentials'})
         }
-        const token = jwt.sign({userId:user._id},SECRET_KEY,{expiresIn:'1hr'})
+        const token = jwt.sign({userId:user._id},process.env.SECRET_KEY,{expiresIn:'1hr'})
         res.json({message:'login successful'})
     } catch (error) {
         console.log(error);
@@ -80,13 +81,13 @@ app.post("/authenticate", async (req, res) => {
     }
   })
 
-  
+   app.use(UploadRoute)
 
-  
+   
+
     
-
-app.listen(3001,()=>{
-    console.log('server and DB connected');
+app.listen(PORT,()=>{
+    console.log('server and DB connected',PORT);
 });
 })
 
