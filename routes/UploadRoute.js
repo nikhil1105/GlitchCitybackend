@@ -6,9 +6,9 @@ const router = Router()
 
 router.post('/api/save',UploadMiddleware.single('photo'),(req,res)=>{
     const photo = req.file.filename
-    console.log(photo);
+    const subject= req.body.subject
     uploadmodle.create({
-        photo
+        photo,subject
     }).then((data)=>{
         console.log('upload success');
         console.log(data);
@@ -22,6 +22,17 @@ router.get('/api/get', async (req,res)=>{
     const allPhotos = await uploadmodle.find().sort({
         createAt:'descending'
     })
+    res.send(allPhotos)
+})
+
+
+router.post('/api/search', async (req,res)=>{
+    const subject= req.body.subject
+
+    const allPhotos = await uploadmodle.find({subject}).sort({
+        createAt:'descending'
+    })
+    console.log(allPhotos);
     res.send(allPhotos)
 })
 
