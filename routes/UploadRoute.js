@@ -28,8 +28,10 @@ router.get('/api/get', async (req,res)=>{
 
 router.post('/api/search', async (req,res)=>{
     const subject= req.body.subject
-
-    const allPhotos = await uploadmodle.find({subject}).sort({
+    
+    const allPhotos = subject=='all'? await uploadmodle.find().sort({
+        createAt:'descending'
+    }) : await uploadmodle.find({subject}).sort({
         createAt:'descending'
     })
     console.log(allPhotos);
