@@ -70,7 +70,7 @@ app.post("/authenticate", async (req, res) => {
         if (!user) {
             return res.status(401).json({error:'Invalid Username'})
         }
-        const pass = await bcrypt.compare(password,user.password)
+        const pass = bcrypt.compare(password,user.password)
         if (!pass) {
             return res.status(401).json({error:'Invalid Password'})
         }
