@@ -68,17 +68,18 @@ app.post("/authenticate", async (req, res) => {
         const user = await User.findOne({username})
         console.log(user);
         if (!user) {
-            return res.status(401).json({error:'invalid credentials'})
+            return res.status(401).json({error:'Invalid Username'})
         }
         const pass = await bcrypt.compare(password,user.password)
         if (!pass) {
-            return res.status(401).json({error:'invalid credentials'})
+            return res.status(401).json({error:'Invalid Password'})
         }
         const token = jwt.sign({userId:user._id},process.env.SECRET_KEY,{expiresIn:'1hr'})
         res.json({message:'login successful'})
     } catch (error) {
         console.log(error);
-        res.status(500).json({error:"error in logging"})
+        res.status(500).json({error:"Something Went Wrong"})
+        
     }
   })
 
